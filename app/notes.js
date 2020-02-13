@@ -2,7 +2,13 @@ const fs = require('fs');
 const path = require('path');
 const notePath = path.join(__dirname, 'notes.json');
 
-const addNote = (title, body) => {
+/**
+ *
+ * function add new note into json file
+ * @param {String} title
+ * @param {String} body
+ */
+function addNote(title, body) {
   const notes = readNotes();
   const isDublicated = notes.find((note) => note.title === title);
   if (isDublicated) {
@@ -21,12 +27,9 @@ const addNote = (title, body) => {
  * @return {String}
  */
 function readNotes() {
-  try {
-    const content = fs.readFileSync(notePath, 'utf-8');
-    return JSON.parse(content);
-  } catch (error) {
-    console.log(error);
-  }
+  fs.existsSync(notePath) || fs.writeFileSync(notePath, JSON.stringify([]));
+  const content = fs.readFileSync(notePath, 'utf-8');
+  return JSON.parse(content);
 };
 
 /**
@@ -35,14 +38,14 @@ function readNotes() {
  * @param {Object} content
  */
 function writeNotes(content) {
-  try {
-    fs.writeFileSync(notePath, JSON.stringify(content));
-  } catch (error) {
-    console.log(error);
-  }
+  fs.writeFileSync(notePath, JSON.stringify(content));
 };
 
-const listNotes = () => {
+/**
+ * function get all notes from json and show them on console
+ *
+ */
+function listNotes() {
   const notes = readNotes();
   if (notes.length) {
     console.log('List of notes:');
@@ -54,7 +57,12 @@ const listNotes = () => {
   }
 };
 
-const readNote = (title) => {
+/**
+ *
+ * function read note by title from json and show it on console
+ * @param {String} title
+ */
+function readNote(title) {
   const notes = readNotes();
   const note = notes.find((note) => note.title === title);
   if (note) {
@@ -64,7 +72,12 @@ const readNote = (title) => {
   }
 };
 
-const deleteNote = (title) => {
+/**
+ *
+ * function delete note by title from json
+ * @param {String} title
+ */
+function deleteNote(title) {
   const notes = readNotes();
   const isExists = notes.find((note) => note.title === title);
   if (isExists) {
@@ -76,12 +89,18 @@ const deleteNote = (title) => {
   }
 };
 
-const editNote = (title, body) => {
+/**
+ *
+ * function edit note in json
+ * @param {String} title
+ * @param {String} body
+ */
+function editNote(title, body) {
   const notes = readNotes();
   const isExists = notes.find((note) => note.title === title);
   if (isExists) {
-    const editednote = notes.find((note) => note.title === title);
-    editednote.body = body;
+    const editedNote = notes.find((note) => note.title === title);
+    editedNote.body = body;
     writeNotes(notes);
     console.log(`Note "${title}" is edited`);
   } else {
